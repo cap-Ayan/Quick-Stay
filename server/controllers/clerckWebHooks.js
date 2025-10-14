@@ -1,4 +1,4 @@
-import userModel from "../model/userModel";
+import userModel from "../model/userModel.js";
 import { Webhook } from "svix";
 
 
