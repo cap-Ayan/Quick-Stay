@@ -7,6 +7,9 @@ import { clerkMiddleware } from '@clerk/express'
 import webHook from './controllers/clerckWebHooks.js'
 import userRouter from './routes/userRoutes.js'
 import hotelRouter  from './routes/hotelRoute.js'    
+import connectCloudinary from './config/cloudinary.js'
+import roomRouter from './routes/roomRoute.js'
+import bookingRouter from './routes/bookingRoute.js'
 
 const PORT =process.env.PORT || 3000
 
@@ -16,6 +19,10 @@ app.use(cors())
 configDotenv()
 
 dbConnect()
+
+connectCloudinary()
+
+
 // Use express.raw() for the webhook route ONLY
 app.post('/api/clerk', express.raw({type: 'application/json'}), webHook) //API to listen to clerk webhooks
 
@@ -23,6 +30,10 @@ app.use(express.json()) // Use express.json() for all other routes
 app.use(clerkMiddleware())
 app.use('/api/user',userRouter)
 app.use('/api/hotel',hotelRouter)
+app.use('/api/rooms',roomRouter)
+app.use('/api/bookings',bookingRouter)
+    
+
 
 
 app.get('/',(req,res)=>{
