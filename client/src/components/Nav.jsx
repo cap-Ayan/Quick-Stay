@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets';
 import { useUser, UserButton, SignInButton } from '@clerk/clerk-react';
+import { useAppContext } from '../context/AppContext';
 
 const BookIcon = ()=>(
     <svg className="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" >
@@ -19,8 +20,9 @@ const Nav = () => {
 
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const { user } = useUser();
-  const navigate = useNavigate();
+ 
+
+  const{user,navigate,isOwner,setShowHotelReg} =useAppContext()
   
 
   React.useEffect(() => {
@@ -75,8 +77,8 @@ const Nav = () => {
                     className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${
                     isScrolled ? 'text-black' : 'text-white'
                     } transition-all`}
-                >
-                    Dashboard
+                onClick={()=>{isOwner?navigate('/owner'):setShowHotelReg(true)}}>
+                    {isOwner ?  'Dashboard':'List Your Hotel'}
                 </button>
                }
       
@@ -154,8 +156,8 @@ const Nav = () => {
         ))}
 
        
-          {user &&<button className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all" onClick={()=>{navigate('/owner')}}>
-            Dashboard
+          {user &&<button className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all" onClick={()=>{isOwner?navigate('/owner'):setShowHotelReg(true)}}>
+           {isOwner ?  'Dashboard':'List Your Hotel'}
           </button>}
        
 
