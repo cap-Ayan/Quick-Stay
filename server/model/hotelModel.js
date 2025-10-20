@@ -16,7 +16,7 @@ const hotelSchema = new Schema({
         type:String,
         required:true
     },
-    owwner:{
+    owner:{
         type:String,
         required:true,
         ref:'User'

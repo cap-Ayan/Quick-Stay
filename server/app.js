@@ -20,7 +20,7 @@ configDotenv()
 
 dbConnect()
 
-connectCloudinary()
+
 
 
 // Use express.raw() for the webhook route ONLY

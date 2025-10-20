@@ -8,6 +8,6 @@ const roomRouter = express.Router();
 roomRouter.post('/',upload.array('images',4),protect,createRoom)
 roomRouter.get('/',protect,getRooms)
 roomRouter.get('/owner',protect,getOwnerRooms)
-roomRouter.get('/toggle-availability',protect,toggleAvailability)
+roomRouter.post('/toggle-availability',protect,toggleAvailability)
 
 export default roomRouter;

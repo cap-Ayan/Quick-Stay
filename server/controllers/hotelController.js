@@ -18,7 +18,7 @@ const registerHotel = async (req,res)=>{
          res.json({success:true,message:"Hotel registered"})
 
     }catch(error){
-
+          
           res.json({success:false,message:error.message})
     }
 }

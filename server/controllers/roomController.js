@@ -7,7 +7,7 @@ import roomModel from "../model/roomModel.js";
 const createRoom = async (req,res)=>{
   try {
     const {roomType,pricePerNight,amenities} =req.body;
-    const hotel = await hotelModel.findOne({owwner:req.auth.userId})
+    const hotel = await hotelModel.findOne({owner:req.auth().userId})
     if(!hotel){
        return res.json({success:false,message:"Hotel not found"})
     }
@@ -61,7 +61,7 @@ const getRooms = async (req,res)=>{
 //Api to get room for a specific hotel
 const getOwnerRooms = async (req,res)=>{
     try{
-        const hotelData = await hotelModel.find({owwner: req.auth.userId})
+        const hotelData = await hotelModel.findOne({owner: req.auth().userId})
         const rooms = await roomModel.find({hotel:hotelData._id.toString()}).populate('hotel')
 
         res.json({success:true, rooms})
@@ -75,6 +75,7 @@ const getOwnerRooms = async (req,res)=>{
 const toggleAvailability = async (req,res)=>{
     try {
        const {roomId} = req.body;
+       
        const roomData = await roomModel.findById(roomId);
 
        roomData.isAvailable = !roomData.isAvailable;

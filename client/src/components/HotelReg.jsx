@@ -19,7 +19,7 @@ const HotelReg = () => {
     const onSubmitHandler = async (event) => {
   event.preventDefault();
   try {
-    const { data } = await axios.post('/api/hotels/', {
+    const { data } = await axios.post('/api/hotel', {
       name,
       address,
       contact,

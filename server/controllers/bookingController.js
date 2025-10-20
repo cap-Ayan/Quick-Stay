@@ -85,7 +85,7 @@ const getHotelBookings = async(req, res)=>{
 
   try {
     
-    const hotel = await hotelModel.findOne({owner: req.auth.userId});
+    const hotel = await hotelModel.findOne({owner: req.auth().userId});
 
   if(!hotel){
     return res.json({success: false, message: "Hotel not found"});
