@@ -1,3 +1,4 @@
+import transporter from "../config/nodeMailer.js";
 import bookingModel from "../model/bookingsModel.js"
 import hotelModel from "../model/hotelModel.js";
 import roomModel from "../model/roomModel.js";
@@ -38,6 +39,7 @@ const createBooking = async(req, res)=>{
     try {
         const {checkInDate, checkOutDate, room, guests} = req.body;
         const user =req.user._id;
+        
 
         const isAvailable = await checkAvailability({checkInDate, checkOutDate, room});
         if(!isAvailable){
@@ -63,6 +65,31 @@ const createBooking = async(req, res)=>{
             totalPrice,
             hotel: roomData.hotel._id
         })
+
+        const mailOptions = {
+           from: process.env.SENDER_EMAIL,
+    to: req.user.email,
+    subject: "Hotel Booking Confirmation",
+   
+    html: `<h2>Your booking details</h2>
+    <p>Dear ${req.user.username},</p>
+    <p>Thank You for booking , here are the details of your booking:</p>
+    <ul>
+        <li>Booking ID: ${booking._id}</li>
+        <li>Hotel: ${roomData.hotel.name}</li>
+        <li>Hotel Address: ${roomData.hotel.address}</li>
+        <li>Check-in Date: ${checkInDate}</li>
+        <li>Check-out Date: ${checkOutDate}</li>
+        <li>Total Price:${process.env.CURRENCY} ${totalPrice}</li>
+    </ul>
+    <p>we look forward to seeing you soon.</p>
+    
+
+
+    `, // HTML body
+        }
+
+        await transporter.sendMail(mailOptions)
 
         res.json({success: true, message: "Booking created successfully"});
     } catch (error) {
@@ -92,7 +119,7 @@ const getHotelBookings = async(req, res)=>{
   }
 
   const bookings = await bookingModel.find({hotel: hotel._id}).populate('user room hotel').sort({createdAt: -1});
-  res.json({success: true, bookings});
+ 
 
   const totalBookings = bookings.length;
 

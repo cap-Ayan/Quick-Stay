@@ -5,55 +5,53 @@ import Title from '../../components/Title'
 import { useActionState } from 'react'
 import toast from 'react-hot-toast'
 import { useAppContext } from '../../context/AppContext'
+import { useCallback } from 'react'
 
 
 
 const ListRoom = () => {
   const [room, setRoom] = useState([])
-  const{axios,getToken,user} =useAppContext()
+  const{axios,getToken,user,currency} =useAppContext()
 
   //Fetch rooms of owner
-  const fetchRooms = async ()=>{
-    try {
-      const {data} = await axios.get('/api/rooms/owner',{
-        headers:{
-          Authorization: `Bearer ${await getToken()}`
-        }
-      })
+ const fetchRooms = useCallback(async () => {
+  try {
+    const { data } = await axios.get('/api/rooms/owner', {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`
+      }
+    });
 
-      if(data.success){
-        setRoom(data.rooms)
-      }
-      else{
-        toast.error(data.message)
-      }
-    } catch (error) {
-      toast.error(error.message)
+    if (data.success) {
+      setRoom(data.rooms);
+    } else {
+      toast.error(data.message);
     }
+  } catch (error) {
+    toast.error(error.message);
   }
+}, [axios, getToken]);
 
   //Toggle availability of the room
 
-  const toggleAvailability = async (roomId)=>{
-       try{
-        
-        const{data} =await axios.post(`/api/rooms/toggle-availability`,{roomId},{
-        headers:{
-          Authorization: `Bearer ${await getToken()}`
-        }
-       })
+ const toggleAvailability = useCallback(async (roomId) => {
+  try {
+    const { data } = await axios.post(`/api/rooms/toggle-availability`, { roomId }, {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`
+      }
+    });
 
-       if(data.success){
-        toast.success(data.message)
-        fetchRooms()
-       }
-       else{
-        toast.error(data.message)
-       }
-       }catch(error){
-        toast.error(error.message)
-       }
+    if (data.success) {
+      toast.success(data.message);
+      fetchRooms(); // safe to call because fetchRooms is memoized
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    toast.error(error.message);
   }
+}, [axios, getToken, fetchRooms]);
 
   useEffect(()=>{
     if(user){
@@ -89,7 +87,7 @@ const ListRoom = () => {
                     </td>
 
                      <td className='py-3 px-4 text-gray-700 border-t border-gray-300'>
-                      ${item.pricePerNight}
+                      {currency}{item.pricePerNight}
                     </td>
                     <td className='py-3 px-4 text-sm text-red-500 border-t border-gray-300 text-center'>
                      <label htmlFor="" className='relative inline-flex items-center cursor-pointer  text-gray-900 gap-3' onClick={() => toggleAvailability(item._id)}>

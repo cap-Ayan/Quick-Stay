@@ -1,11 +1,38 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Title from '../components/Title'
 import { assets, userBookingsDummyData } from '../assets/assets'
 import { useState } from 'react'
+import { useAppContext } from '../context/AppContext'
+import toast from 'react-hot-toast'
 
 
 const MyBookings = () => {
-const [bookings,setBookings] = useState(userBookingsDummyData)
+  const{axios,getToken,user}= useAppContext()
+const [bookings,setBookings] = useState([])
+
+ const fetchBookings = async () => {
+      try {
+        const{data} = await axios.get('/api/bookings/user',{
+          headers:{
+            Authorization: `Bearer ${await getToken()}`
+          }
+        })
+        if(data.success){
+          setBookings(data.bookings)
+        }else{
+          toast.error(data.message)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+}
+
+useEffect(()=>{
+  if(user){
+    fetchBookings()
+  }
+},[user])
+
 
   return (
     <div className='py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32 bg-slate-50 text-gray-800'>
@@ -17,7 +44,7 @@ const [bookings,setBookings] = useState(userBookingsDummyData)
              <div className='w-1/3'>Payment </div>
             
           </div>
-          {bookings.map((booking,i)=>(
+          {bookings && bookings.map((booking,i)=>(
             <div key={booking._id} className='grid grid-cols-1 md:grid-cols-[3fr_2fr_1fr] border-b w-full border-gray-300 py-6 first:border-t'>
               <div className='flex flex-col md:flex-row'>
                 <img src={booking.room.images[0]} alt="hotel-img" className='min-md:w-44 rounded shadow object-cover' />
