@@ -7,8 +7,27 @@ import toast from 'react-hot-toast'
 
 
 const MyBookings = () => {
-  const{axios,getToken,user}= useAppContext()
+  const{axios,getToken,user,navigate}= useAppContext()
 const [bookings,setBookings] = useState([])
+
+const handlePayments = async (bookingId) => {
+  console.log(bookingId);
+  try {
+    const {data}= await axios.post('/api/bookings/stripe-payment',{bookingId},{
+      headers:{
+        Authorization: `Bearer ${await getToken()}`
+      }
+    })
+    if(data.success){
+      window.location.href = data.url;
+    }else{
+      
+      toast.error(data.message)
+    }
+  } catch (error) {
+    toast.error(error.message)
+  }
+}
 
  const fetchBookings = async () => {
       try {
@@ -85,7 +104,7 @@ useEffect(()=>{
                     <div className={`h-3 w-3 rounded-full ${booking.isPaid ?"bg-green-500":"bg-red-500"}`}></div>
                     <p  className={`text-sm ${booking.isPaid ?"text-green-500":"text-red-500"}`}>{booking.isPaid ? "Paid":"Unpaid"}</p>
                   </div>
-                  {!booking.isPaid && (<button className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:g-gray-50 transition-all cursor-pointer'>Pay Now</button>)}
+                  {!booking.isPaid && (<button className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:g-gray-50 transition-all cursor-pointer' onClick={()=>handlePayments(booking._id)}>Pay Now</button>)}
               </div>
             </div>
           ))}
