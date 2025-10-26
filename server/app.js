@@ -25,9 +25,10 @@ dbConnect()
 
 // Use express.raw() for the webhook route ONLY
 app.post('/api/clerk', express.raw({type: 'application/json'}), webHook) //API to listen to clerk webhooks
+app.use(clerkMiddleware())
 
 app.use(express.json()) // Use express.json() for all other routes
-app.use(clerkMiddleware())
+
 app.use('/api/user',userRouter)
 app.use('/api/hotel',hotelRouter)
 app.use('/api/rooms',roomRouter)
