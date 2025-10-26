@@ -3,7 +3,7 @@ import Hero from '../components/Hero'
 import FeaturdDestination from '../components/FeaturdDestination'
 import ExclusiveOffers from '../components/ExclusiveOffers'
 import Testimonial from '../components/Testimonial'
-import NewsLetter from '../components/NewsLetter'
+
 import Footer from '../components/Footer'
 import RecomendedHotels from '../components/RecomendedHotels'
 
@@ -15,7 +15,7 @@ const Home = () => {
     <FeaturdDestination/>
     <ExclusiveOffers/>
     <Testimonial/>
-    <NewsLetter/>
+    
     
     </div>
     
